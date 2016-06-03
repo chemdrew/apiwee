@@ -1,0 +1,25 @@
+{
+    "keyboard cat, random string": {
+        "routes": [
+            "GET:/ios/version/:version",
+            "GET:/android/version/:version"
+        ],
+        "counts": [
+            0,0
+        ],
+        "ips": [
+            "::1"
+        ],
+        "locked": false
+    },
+    "another api key!": {
+        "routes": [
+            "GET:/ios/version/:version"
+        ],
+        "counts": [
+            0
+        ],
+        "ips": [],
+        "locked": true
+    }
+}

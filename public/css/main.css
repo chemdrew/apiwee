@@ -1,0 +1,19 @@
+ul {
+    list-style: none;
+}
+
+#api-keys {
+    float: left;
+}
+
+#available-routes {
+    float: right;
+}
+
+.routes-method {
+    display: inline-block;
+}
+
+.routes-path {
+    display: inline-block;
+}
