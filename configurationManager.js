@@ -1,9 +1,15 @@
+var bodyParser = require('body-parser');
+
 module.exports = function(express, app, apiKeysFileLocation, fs) {
     var sessionExpireation = 1800000; //30min
     var session = {
         key: '',
         expires: 0
     };
+
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
 
     app.use('/andrewsKeyManagementTool', express.static(__dirname + '/public'));
 

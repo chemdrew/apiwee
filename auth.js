@@ -5,8 +5,8 @@ var allowKeyFileUpdating = false;
 var publicPaths = [];
 
 module.exports = function(express, app, config) {
-    publicPaths = config.publicPaths || [];
-    allowKeyFileUpdating = config.allowKeyFileUpdating || false;
+    publicPaths = config ? config.publicPaths || [] : [];
+    allowKeyFileUpdating = config ? config.allowKeyFileUpdating || false : false;
 
     require(__dirname+'/configurationManager')(express, app, apiKeysFileLocation, fs);
     return auth;
