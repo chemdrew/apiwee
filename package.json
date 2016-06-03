@@ -1,0 +1,35 @@
+{
+  "name": "apiwee",
+  "description": "basic api key managament for a single instance node service",
+  "version": "0.0.1",
+  "author": {
+    "name": "Andrew Pratt <chemdrew1@gmail.com> (http://chemdrew.com)"
+  },
+  "homepage": "https://github.com/chemdrew/apiwee",
+  "bugs": {
+    "email": "chemdrew1@gmail.com"
+  },
+  "keywords": [
+    "api", "apiKey", "api-key"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chemdrew/apiwee.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "start": "",
+    "test": ""
+  },
+  "main": "./auth.js",
+  "_npmUser": {
+    "name": "chemdrew",
+    "email": "chemdrew1@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "Andrew Pratt",
+      "email": "chemdrew1@gmail.com"
+    }
+  ]
+}
