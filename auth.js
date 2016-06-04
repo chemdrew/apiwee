@@ -1,14 +1,12 @@
 var fs = require('fs');
 var apiKeysFileLocation = __dirname + '/applicationKeys.json';
 
-var allowKeyFileUpdating = false;
 var publicPaths = [];
 
-module.exports = function(express, app, config) {
-    publicPaths = config ? config.publicPaths || [] : [];
-    allowKeyFileUpdating = config ? config.allowKeyFileUpdating || false : false;
+module.exports = function(express, app, user, config) {
+    publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
 
-    require(__dirname+'/configurationManager')(express, app, apiKeysFileLocation, fs);
+    require(__dirname+'/configurationManager')(express, app, user, apiKeysFileLocation, fs);
     return auth;
 };
 
@@ -36,14 +34,11 @@ function isValid(key, keys, req) {
     if (path.charAt(path.length-1) == '/') path = path.substring(0, path.length-1);
     var permissionInfo = keys[key];
     if (!permissionInfo) return false;
-    if (permissionInfo.ips.indexOf(req.ip) < 0) permissionInfo.ips.push(req.ip);
     var validRoutes = permissionInfo.routes;
     var i = 0;
     for (i; i < validRoutes.length; i++) {
         var regex = regexify(validRoutes[i]);
         if (regex.test(`${req.method}:${path}`)) {
-            permissionInfo.counts[i]++;
-            if (allowKeyFileUpdating) fs.writeFile(apiKeysFileLocation, JSON.stringify(keys, null, 4));
             if (!permissionInfo.locked) return true;
             break;
         }

@@ -1,5 +1,34 @@
+body {
+    color: #2A2A2D;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #F4F7FB;
+}
+
 ul {
     list-style: none;
+}
+
+#buttons {
+    padding: 10px;
+}
+
+#buttons div {
+    display: inline-block;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background-color: mediumslateblue;
+    color: white;
+    cursor: pointer;
+}
+
+#buttons div:hover {
+    background-color: #5D4EB5;
 }
 
 #api-keys {
@@ -16,4 +45,204 @@ ul {
 
 .routes-path {
     display: inline-block;
+}
+
+.available-route {
+    padding: 2px;
+    margin: 2px;
+}
+
+.api-key-config {
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+    border-width: 2px;
+    border-color: mediumslateblue;
+    border-style: solid;
+    width: 100%;
+}
+
+.drop-cover {
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    z-index: -1;
+}
+
+.key-remove {
+    position: absolute;
+    display: inline-block;
+    right: 5px;
+    cursor: pointer;
+}
+
+.key-remove:hover {
+    color: #808080;
+}
+
+.key-name {
+    padding-right: 3px;
+    padding-left: 3px;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 50px;
+    border-bottom-color: transparent;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.key-name:focus {
+    outline: none;
+    border-bottom-color: mediumslateblue;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.key-route {
+    display: inline-block;
+}
+
+.key-status {
+
+}
+
+.active-toggle {
+    padding-left: 3px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.active-title {
+    display: inline-block;
+    line-height: 18px;
+    vertical-align: top;
+}
+
+.key-ips {
+    display: none;
+}
+
+.toggle-button {
+    background-color: white;
+    /*margin: 5px 0;*/
+    border-radius: 20px;
+    border: 2px solid #D0D0D0;
+    height: 14px;
+    cursor: pointer;
+    width: 30px;
+    position: relative;
+    display: inline-block;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+}
+
+.toggle-button button {
+    cursor: pointer;
+    outline: 0;
+    display:block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    float: left;
+    margin: -3px 0 0 -3px;
+    border: 2px solid #D0D0D0;
+    transition: left 0.3s;
+}
+
+.active-true {
+    background-color: mediumslateblue;
+    border: 2px solid mediumslateblue;
+}
+
+.active-true button {
+    left: 16px;
+    top: 0;
+    margin: 0;
+    border: none;
+    width: 14px;
+    height: 14px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.permitted-routes {
+}
+
+.permitted-routes li {
+    margin-top: 1px;
+    border-bottom-color: #DEDBF3;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.save-popup {
+    position: fixed;
+    z-index: 20;
+    margin: 0;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
+    border-width: 2px;
+    border-color: mediumslateblue;
+    border-style: solid;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, 0);
+}
+
+.popup-background-cover {
+    z-index: 19;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0.5)
+}
+
+.apiwee-info {
+    padding: 10px;
+}
+
+.save-popup-container input {
+    border: none;
+    border-bottom-color: mediumslateblue;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.save-popup-container input:focus {
+    outline: none;
+}
+
+.username-label, .password-label, #username, #password {
+    display: inline-block;
+}
+
+.save-popup-confirm, .save-popup-cancel {
+    display: inline-block;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 5px;
+    /*margin-top: 5px;
+    margin-bottom: 5px;*/
+    border-radius: 5px;
+    background-color: mediumslateblue;
+    color: white;
+    cursor: pointer;
+}
+
+.save-popup-confirm:hover, .save-popup-cancel:hover {
+    background-color: #5D4EB5;
 }

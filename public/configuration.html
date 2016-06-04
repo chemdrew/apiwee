@@ -1,13 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link href="/andrewsKeyManagementTool/css/main.css" rel="stylesheet">
-        <script src="/andrewsKeyManagementTool/js/main.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <link href="/apiwee/css/main.css" rel="stylesheet">
+        <script src="/apiwee/js/main.js"></script>
     </head>
 
     <body>
-        <h1>configuration page</h1><input type="submit" value="Save"><br>
+        <h1>api configurations</h1>
+        <div id="instructions">Click and drag routes to add them to the api key</div>
+        <div id="buttons">
+            <div id="save-configuration">save</div>
+            <div id="new-api-key" type="submit">new api key</div>
+        </div>
         <ul id="api-keys"><^_^></ul>
         <ul id="available-routes"><O.o></ul>
+        <div class="popup-background-cover" style="display:none"></div>
+        <div class="save-popup" style="display:none">
+            <div class="save-popup-container">
+                <div class="apiwee-info">confirm username and password to save</div>
+                <div class="username-label">username:</div>
+                <input id="username" type="text" name="username"><br>
+                <div class="password-label">password:</div>
+                <input id="password" type="password" name="password"><br>
+                <div class="save-popup-cancel">cancel</div><div class="save-popup-confirm">confirm</div>
+            </div>
+        </div>
     </body>
 </html>
