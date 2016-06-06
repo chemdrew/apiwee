@@ -48,7 +48,7 @@ function isValid(key, keys, req) {
 
 function regexify(path) {
     var regexstr = path.replace(/\/:.*?\/\s?/, '\/(?:([^\/]+?))\/');
-    regexstr = path.replace(/\/:.*?.*\s?/, '\/(?:([^\/]+?))');
+    regexstr = regexstr.replace(/\/:.*?.*\s?/, '\/(?:([^\/]+?))');
     regexstr += '\/?$';
     return new RegExp(regexstr);
 }
