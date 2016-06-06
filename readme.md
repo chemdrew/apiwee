@@ -1,4 +1,4 @@
-![apiweeeeee](https://github.com/chemdrew/apiwee/raw/master/images/ooooWeeee.png =100x292)
+<img src="https://github.com/chemdrew/apiwee/raw/master/images/ooooWeeee.png" width="100" height="292">
 
 A fast and lightweight solution for quickly adding api keys to an Express application
 
