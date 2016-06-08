@@ -91,7 +91,7 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
 
     apiweeApp.patch('/apiwee/configurations',function(req, res){
         if (req.body.username == user.username && req.body.password == user.password) {
-            var applicationKeys = req.body;
+            var applicationKeys = JSON.parse(JSON.stringify(req.body));
             delete applicationKeys.username;
             delete applicationKeys.password;
             if (validApplicationKeys(applicationKeys)) {
@@ -102,7 +102,7 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
                             var processed = 0;
                             var i = 0;
                             for (i = 0; i < ips.length; i++) {
-                                sendRequest(awsInfo.protocol, ips[i], awsInfo.port, req.body, () => {
+                                sendRequest(awsInfo.protocol, ips[i], awsInfo.port, JSON.stringify(req.body), () => {
                                     processed++;
                                     if (isDone(ips.length, processed)) return res.sendStatus(204);
                                 });
