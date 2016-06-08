@@ -12,11 +12,11 @@ var awsInfo = {
 
 module.exports = function(express, app, user, config) {
     publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
-    aws.region = config.awsRegion;
-    aws.environment = config.awsEnvironment;
-    aws.isntanceName = config.awsInstanceName;
-    aws.protocol = config.protocol;
-    aws.port = config.port;
+    awsInfo.region = config.awsRegion;
+    awsInfo.environment = config.awsEnvironment;
+    awsInfo.isntanceName = config.awsInstanceName;
+    awsInfo.protocol = config.protocol;
+    awsInfo.port = config.port;
 
     require(__dirname+'/configurationManager')(express, app, user, apiKeysFileLocation, fs, awsInfo);
     return auth;
