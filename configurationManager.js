@@ -153,7 +153,7 @@ function validApplicationKeys(applicationKeys) {
     var i = 0;
     for (i; i < keys.length; i++) {
         var keys2 = Object.keys(applicationKeys[keys[i]]);
-        if ( keys2.length != 2 || !Array.isArray(applicationKeys[keys[i]].routes) || keys2.indexOf('locked') < 0 ) return false;
+        if ( keys2.length < 2 || !Array.isArray(applicationKeys[keys[i]].routes) || keys2.indexOf('locked') < 0 ) return false;
     }
     return true;
 }
