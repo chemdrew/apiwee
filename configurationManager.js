@@ -171,6 +171,7 @@ function sendRequest(protocol, host, port, body, next) {
     var options = {
         hostname: host,
         port: port,
+        rejectUnauthorized: false,
         path: '/apiwee/configurations',
         method: 'PATCH',
         headers: {
