@@ -95,23 +95,25 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
             delete applicationKeys.username;
             delete applicationKeys.password;
             if (validApplicationKeys(applicationKeys)) {
-                fs.writeFile(apiKeysFileLocation, JSON.stringify(applicationKeys), (err) => {
-                    if (err) return res.sendStatus(500);
-                    if (awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
-                        getInstances(awsInfo, (ips) => {
-                            var processed = 0;
-                            var i = 0;
-                            for (i = 0; i < ips.length; i++) {
-                                sendRequest(awsInfo.protocol, ips[i], awsInfo.port, JSON.stringify(req.body), () => {
-                                    processed++;
-                                    if (isDone(ips.length, processed)) return res.sendStatus(204);
-                                });
-                            }
-                        });
-                    } else {
+                if (!req.body.awsInstance && awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
+                    getInstances(awsInfo, (ips) => {
+                        var processed = 0;
+                        var i = 0;
+                        for (i = 0; i < ips.length; i++) {
+                            req.body.awsInstance = true;
+                            sendRequest(awsInfo.protocol, ips[i], awsInfo.port, JSON.stringify(req.body), () => {
+                                processed++;
+                                if (isDone(ips.length, processed)) return res.sendStatus(204);
+                            });
+                        }
+                    });
+                } else {
+                    delete req.body.awsInstance;
+                    fs.writeFile(apiKeysFileLocation, JSON.stringify(applicationKeys), (err) => {
+                        if (err) return res.sendStatus(500);
                         return res.sendStatus(204);
-                    }
-                });
+                    });
+                }
             } else {
                 return res.sendStatus(400);
             }
