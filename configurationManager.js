@@ -95,7 +95,7 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
             delete applicationKeys.username;
             delete applicationKeys.password;
             if (validApplicationKeys(applicationKeys)) {
-                if (!req.body.awsInstance && awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
+                if (!applicationKeys.awsInstance && awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
                     getInstances(awsInfo, (ips) => {
                         var processed = 0;
                         var i = 0;
@@ -108,7 +108,7 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
                         }
                     });
                 } else {
-                    delete req.body.awsInstance;
+                    delete applicationKeys.awsInstance;
                     fs.writeFile(apiKeysFileLocation, JSON.stringify(applicationKeys), (err) => {
                         if (err) return res.sendStatus(500);
                         return res.sendStatus(204);
@@ -149,12 +149,6 @@ function getInstances(awsInstance, next) {
 
 function validApplicationKeys(applicationKeys) {
     if ( typeof applicationKeys !== 'object' ) return false;
-    var keys = Object.keys(applicationKeys);
-    var i = 0;
-    for (i; i < keys.length; i++) {
-        var keys2 = Object.keys(applicationKeys[keys[i]]);
-        if ( keys2.length < 2 || !Array.isArray(applicationKeys[keys[i]].routes) || keys2.indexOf('locked') < 0 ) return false;
-    }
     return true;
 }
 
