@@ -14,7 +14,7 @@ module.exports = function(express, app, user, config) {
     publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
     awsInfo.region = config.awsRegion;
     awsInfo.environment = config.awsEnvironment;
-    awsInfo.isntanceName = config.awsInstanceName;
+    awsInfo.instanceName = config.awsInstanceName;
     awsInfo.protocol = config.protocol;
     awsInfo.port = config.port;
 
