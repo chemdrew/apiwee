@@ -2,11 +2,23 @@ var fs = require('fs');
 var apiKeysFileLocation = __dirname + '/applicationKeys.json';
 
 var publicPaths = [];
+var awsInfo = {
+    region: undefined,
+    environment: undefined,
+    instanceName: undefined,
+    protocol: undefined,
+    port: undefined
+}
 
 module.exports = function(express, app, user, config) {
     publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
+    aws.region = config.awsRegion;
+    aws.environment = config.awsEnvironment;
+    aws.isntanceName = config.awsInstanceName;
+    aws.protocol = config.protocol;
+    aws.port = config.port;
 
-    require(__dirname+'/configurationManager')(express, app, user, apiKeysFileLocation, fs);
+    require(__dirname+'/configurationManager')(express, app, user, apiKeysFileLocation, fs, awsInfo);
     return auth;
 };
 

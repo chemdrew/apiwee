@@ -1,5 +1,3 @@
-<img src="https://github.com/chemdrew/apiwee/raw/master/images/ooooWeeee.png" width="100" height="292">
-
 A fast and lightweight solution for quickly adding api keys to an Express application
 
 
@@ -36,8 +34,12 @@ this will take you to the configurations page where you can define the keys and 
 
 once your api keys are defined use them by using the header field `x-api-key`
 
-the changes will only work for the instance it is running on, so if you are running multiple instances of the app you will need to add the api key configurations to each one. (already planning the best way to make this work across instances though)
-
+this will work for all aws clusters if you pass in the following fields to the config
+- awsRegion
+- awsEnvironment
+- awsInstanceName
+- protocol
+- port
 
 ## screenshots
 

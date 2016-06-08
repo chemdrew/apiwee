@@ -1,7 +1,10 @@
 var bodyParser = require('body-parser');
+var exec = require('child_process').exec;
+var http = require('http');
+var https = require('https');
 var sessionId;
 
-module.exports = function(express, app, user, apiKeysFileLocation, fs) {
+module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) {
     var apiweeApp = express();
     app.use(apiweeApp);
 
@@ -88,13 +91,26 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs) {
 
     apiweeApp.patch('/apiwee/configurations',function(req, res){
         if (req.body.username == user.username && req.body.password == user.password) {
-            delete req.body.username;
-            delete req.body.password;
             var applicationKeys = req.body;
+            delete applicationKeys.username;
+            delete applicationKeys.password;
             if (validApplicationKeys(applicationKeys)) {
                 fs.writeFile(apiKeysFileLocation, JSON.stringify(applicationKeys), (err) => {
                     if (err) return res.sendStatus(500);
-                    res.sendStatus(204);
+                    if (awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
+                        getInstances(awsInfo, (ips) => {
+                            var processed = 0;
+                            var i = 0;
+                            for (i = 0; i < ips.length; i++) {
+                                sendRequest(awsInfo.protocol, ips[i], awsInfo.port, req.body, () => {
+                                    processed++;
+                                    if (isDone(ips.length, processed)) return res.sendStatus(204);
+                                });
+                            }
+                        });
+                    } else {
+                        return res.sendStatus(204);
+                    }
                 });
             } else {
                 return res.sendStatus(400);
@@ -102,6 +118,30 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs) {
         } else {
             return res.sendStatus(401);
         }
+    });
+}
+
+function getInstances(awsInstance, next) {
+    var cmd = `aws ec2 --region ${awsInstance.region} describe-instances --filters "Name=tag:Environment,Values=${awsInstance.environment}" "Name=tag:Name,Values=${awsInstance.instanceName}"`;
+
+    exec(cmd, function(error, stdout, stderr) {
+        // command output is in stdout
+        var instances;
+        try {
+            instances = JSON.parse(stdout);
+        } catch (err) {
+            return;
+        }
+        var ips = [];
+        var i = 0, j = 0;
+        for (i; i < instances.Reservations.length; i++) {
+            j = 0;
+            for (j; j < instances.Reservations[i].Instances.length; j++) {
+                instances.Reservations[i].Instances[j].PrivateIpAddress
+                ips.push(instances.Reservations[i].Instances[j].PrivateIpAddress);
+            }
+        }
+        next(ips);
     });
 }
 
@@ -124,4 +164,41 @@ function randomString(length, characters) {
     for( var i=0; i < length; i++ )
         text += characters.charAt(Math.floor(Math.random() * characters.length));
     return text;
+}
+
+function isDone(total, processed) {
+    return total == processed;
+}
+
+function sendRequest(protocol, host, port, body, next) {
+
+    var options = {
+        hostname: host,
+        port: port,
+        path: '/apiwee/configurations',
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    };
+
+    var transport = protocol == 'https' ? https : http;
+    var request = transport.request(options, function(response) {
+        var body = '';
+        response.on('data', function(chunk) {
+            body += chunk;
+        });
+        response.on('end', function() {
+            next();
+        });
+        response.on('error', function(err) {
+            next();
+        });
+    });
+    request.on('error', function(err) {
+        next();
+    });
+    request.write(body);
+    request.end();
 }
