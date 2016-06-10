@@ -7,21 +7,21 @@ A fast and lightweight solution for quickly adding api keys to an Express applic
 $ npm install apiwee
 ```
 
-
 ## the code to put it in
 
 ```js
 var express = require('express');
 var app = express();
-var apiwee = require('apiwee')(
-    express, app,
-    {username: 'username', password: 'password'},
-    {publicPaths: ['GET:/', 'GET:/health']}
-);
+var apiweeConfig = {
+    username: 'username', // required
+    password: 'password', // required
+    publicPaths: ['GET:/', 'GET:/health'] // optional
+}
+var apiwee = require('apiwee')(express, app,apiweeConfig);
 
 app.use(apiwee);
 
-app.listen(137);
+app.listen(3000);
 ```
 
 
@@ -34,12 +34,44 @@ this will take you to the configurations page where you can define the keys and 
 
 once your api keys are defined use them by using the header field `x-api-key`
 
-this will work for all aws clusters if you pass in the following fields to the config
-- awsRegion
-- awsEnvironment
-- awsInstanceName
-- protocol
-- port
+username and password are shown hard-coded in the config but use your best judgement on how to pass them into the instantiation.
+
+## handling multiple instances
+
+
+### aws asg group
+
+ensure that each aws instance has permissions for running the aws cli command _describe-instances_
+it also requires you to use the tags `Environment` and `Name` for the groups
+
+below are the required fields for setting up the api keys on all instances in your aws asg group
+```js
+var apiweeConfig = {
+    username: 'username',
+    password: 'password',
+    awsRegion: 'us-east-1',
+    awsEnvironment: 'development',
+    awsInstanceName: 'myApp',
+    protocol: 'http/https',
+    port: 3000
+}
+var apiwee = require('apiwee')(express,app,apiweeConfig);
+```
+
+### hard-coded ips
+
+below is the required config for scaling your api keys across instances using their addresses
+_Include *all* ips, including the address it is running on_
+```js
+var apiweeConfig = {
+    username: 'username',
+    password: 'password',
+    ips: ['1.1.1.1', '1.1.1.2', '1.1.1.3'],
+    protocol: 'http/https',
+    port: 3000
+}
+var apiwee = require('apiwee')(express,app,apiweeConfig);
+```
 
 ## screenshots
 

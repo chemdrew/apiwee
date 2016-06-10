@@ -10,13 +10,19 @@ var awsInfo = {
     port: undefined
 }
 
-module.exports = function(express, app, user, config) {
+module.exports = function(express, app, config) {
+    if (!config.username || !config.password) throw '[APIWEE] username and password are required in the configurations';
     publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
     awsInfo.region = config.awsRegion;
     awsInfo.environment = config.awsEnvironment;
     awsInfo.instanceName = config.awsInstanceName;
     awsInfo.protocol = config.protocol;
     awsInfo.port = config.port;
+
+    var user = {
+        username: config.username,
+        password: config.password
+    }
 
     require(__dirname+'/configurationManager')(express, app, user, apiKeysFileLocation, fs, awsInfo);
     return auth;

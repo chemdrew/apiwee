@@ -4,7 +4,7 @@
             "GET:/ios/version/:version",
             "GET:/android/version/:version"
         ],
-        "locked": false
+        "locked": true
     },
     "another api key!": {
         "routes": [

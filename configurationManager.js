@@ -4,7 +4,7 @@ var http = require('http');
 var https = require('https');
 var sessionId;
 
-module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) {
+module.exports = function(express, app, user, apiKeysFileLocation, fs, instanceGroup) {
     var apiweeApp = express();
     app.use(apiweeApp);
 
@@ -95,20 +95,20 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
             delete applicationKeys.username;
             delete applicationKeys.password;
             if (validApplicationKeys(applicationKeys)) {
-                if (!applicationKeys.awsInstance && awsInfo.region && awsInfo.environment && awsInfo.instanceName && awsInfo.protocol && awsInfo.port) {
-                    getInstances(awsInfo, (ips) => {
+                if (!applicationKeys.fromInstanceGroup && (instanceGroup.region && instanceGroup.environment && instanceGroup.instanceName && instanceGroup.protocol && instanceGroup.port) || instanceGroup.ips) {
+                    getInstances(instanceGroup, (ips) => {
                         var processed = 0;
                         var i = 0;
                         for (i = 0; i < ips.length; i++) {
-                            req.body.awsInstance = true;
-                            sendRequest(awsInfo.protocol, ips[i], awsInfo.port, JSON.stringify(req.body), () => {
+                            req.body.fromInstanceGroup = true;
+                            sendRequest(instanceGroup.protocol, ips[i], instanceGroup.port, JSON.stringify(req.body), () => {
                                 processed++;
                                 if (isDone(ips.length, processed)) return res.sendStatus(204);
                             });
                         }
                     });
                 } else {
-                    delete applicationKeys.awsInstance;
+                    delete applicationKeys.fromInstanceGroup;
                     fs.writeFile(apiKeysFileLocation, JSON.stringify(applicationKeys), (err) => {
                         if (err) return res.sendStatus(500);
                         return res.sendStatus(204);
@@ -123,8 +123,10 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, awsInfo) 
     });
 }
 
-function getInstances(awsInstance, next) {
-    var cmd = `aws ec2 --region ${awsInstance.region} describe-instances --filters "Name=tag:Environment,Values=${awsInstance.environment}" "Name=tag:Name,Values=${awsInstance.instanceName}"`;
+function getInstances(instanceGroup, next) {
+    if (instanceGroup.ips) return instanceGroup.ips;
+
+    var cmd = `aws ec2 --region ${instanceGroup.region} describe-instances --filters "Name=tag:Environment,Values=${instanceGroup.environment}" "Name=tag:Name,Values=${instanceGroup.instanceName}"`;
 
     exec(cmd, function(error, stdout, stderr) {
         // command output is in stdout
