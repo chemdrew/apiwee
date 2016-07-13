@@ -1,5 +1,5 @@
 var fs = require('fs');
-var apiKeysFileLocation = __dirname + '/applicationKeys.json';
+var apiKeysFileLocation;
 
 var publicPaths = [];
 var awsInfo = {
@@ -13,6 +13,7 @@ var awsInfo = {
 module.exports = function(express, app, config) {
     if (!config.username || !config.password) throw '[APIWEE] username and password are required in the configurations';
     publicPaths = config ? publicPaths.concat(config.publicPaths) || publicPaths : publicPaths;
+    apiKeysFileLocation = config.file || __dirname + '/applicationKeys.json';
     awsInfo.region = config.awsRegion;
     awsInfo.environment = config.awsEnvironment;
     awsInfo.instanceName = config.awsInstanceName;

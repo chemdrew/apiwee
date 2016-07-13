@@ -15,7 +15,8 @@ var app = express();
 var apiweeConfig = {
     username: 'username', // required
     password: 'password', // required
-    publicPaths: ['GET:/', 'GET:/health'] // optional
+    publicPaths: ['GET:/', 'GET:/health'], // optional
+    file: __dirname + '/../myNewFileLocation' // optional, otherwise stored in node_modules/apiwee
 }
 var apiwee = require('apiwee')(express, app,apiweeConfig);
 

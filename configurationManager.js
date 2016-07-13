@@ -36,53 +36,56 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, instanceG
             sessionId = undefined;
             var configurationPage = fs.readFileSync(__dirname + '/public/configuration.html').toString();
 
-            var applicationKeys = JSON.parse(fs.readFileSync(apiKeysFileLocation).toString());
-            var keysBuilder = [];
-            var i = 0, j = 0;
-            for (var apiKey in applicationKeys) {
-                keysBuilder.push(
-                `<li class="api-key-config">
-                    <div class="drop-cover" ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)"></div>
-                    <div class="key-name" contenteditable="true">${apiKey}</div><div class="key-remove">delete</div>
-                    <div class="active-toggle">
-                        <div class="active-title">active</div>
-                        <div class="toggle-button active-${!applicationKeys[apiKey].locked}">
-                            <button></button>
-                        </div>
-                    </div>
-                    <ul class="permitted-routes">`
-                );
-                for (i; i < applicationKeys[apiKey].routes.length; i++) {
+            checkApplicationKeysExist(fs, apiKeysFileLocation, function(err) {
+                if (err) return res.redirect( '/apiwee/admin' );
+                var applicationKeys = JSON.parse(fs.readFileSync(apiKeysFileLocation).toString());
+                var keysBuilder = [];
+                var i = 0, j = 0;
+                for (var apiKey in applicationKeys) {
                     keysBuilder.push(
-                        `<li>
-                            <div class="key-route">${applicationKeys[apiKey].routes[i]}</div>
-                            <div class="key-remove">×</div>
-                        </li>`
+                    `<li class="api-key-config">
+                        <div class="drop-cover" ondrop="drop(event)" ondragover="dragover(event)" ondragleave="dragleave(event)"></div>
+                        <div class="key-name" contenteditable="true">${apiKey}</div><div class="key-remove">delete</div>
+                        <div class="active-toggle">
+                            <div class="active-title">active</div>
+                            <div class="toggle-button active-${!applicationKeys[apiKey].locked}">
+                                <button></button>
+                            </div>
+                        </div>
+                        <ul class="permitted-routes">`
                     );
-                }
-                keysBuilder.push(
-                    `</ul>
-                </li>`
-                );
-            }
-            var routes = app._router.stack;
-            var routesBuilder = [];
-            i = 0, j = 0;
-            for (i; i < routes.length; i++) {
-                if (routes[i].route) {
-                    j = 0;
-                    for (j; j < routes[i].route.stack.length; j++) {
-                        routesBuilder.push(
-                        `<li draggable="true" ondragstart="dragstart(event)" ondragend="dragend(event)">
-                            <div class="available-route">${routes[i].route.stack[j].method.toUpperCase()}:${routes[i].route.path}</div>
-                        </li>`
+                    for (i; i < applicationKeys[apiKey].routes.length; i++) {
+                        keysBuilder.push(
+                            `<li>
+                                <div class="key-route">${applicationKeys[apiKey].routes[i]}</div>
+                                <div class="key-remove">×</div>
+                            </li>`
                         );
                     }
+                    keysBuilder.push(
+                        `</ul>
+                    </li>`
+                    );
                 }
-            }
-            configurationPage = configurationPage.replace( '<^_^>', keysBuilder.join(''));
-            configurationPage = configurationPage.replace( '<O.o>', routesBuilder.join(''));
-            res.send( configurationPage );
+                var routes = app._router.stack;
+                var routesBuilder = [];
+                i = 0, j = 0;
+                for (i; i < routes.length; i++) {
+                    if (routes[i].route) {
+                        j = 0;
+                        for (j; j < routes[i].route.stack.length; j++) {
+                            routesBuilder.push(
+                            `<li draggable="true" ondragstart="dragstart(event)" ondragend="dragend(event)">
+                                <div class="available-route">${routes[i].route.stack[j].method.toUpperCase()}:${routes[i].route.path}</div>
+                            </li>`
+                            );
+                        }
+                    }
+                }
+                configurationPage = configurationPage.replace( '<^_^>', keysBuilder.join(''));
+                configurationPage = configurationPage.replace( '<O.o>', routesBuilder.join(''));
+                res.send( configurationPage );
+            });
         } else {
             sessionId = undefined;
             return res.redirect( '/apiwee/admin' );
@@ -121,6 +124,19 @@ module.exports = function(express, app, user, apiKeysFileLocation, fs, instanceG
             return res.sendStatus(401);
         }
     });
+}
+
+function checkApplicationKeysExist(fs, apiKeysFileLocation, next) {
+    try{
+        fs.accessSync(apiKeysFileLocation);
+        next();
+    }catch(e){
+        var stuff = fs.readFileSync(__dirname + '/applicationKeys.json').toString();
+        fs.writeFile(apiKeysFileLocation, stuff, (err) => {
+            if (err) return next('err');
+            next();
+        });
+    }
 }
 
 function getInstances(instanceGroup, next) {
